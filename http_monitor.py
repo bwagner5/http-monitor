@@ -3,18 +3,30 @@
 
 from monitor_args import CLIMonitorArgs
 from log_parser import LogParser
+from stats import Stats
 from pprint import pprint
 from pygtail import Pygtail
 import time
+from threading import Thread
 
 
 class HttpMonitor(object):
     def __init__(self, args):
         print(args)
         parser = LogParser()
+        self.stats = Stats()
+        consoleThread = Thread(target=self.console)
+        consoleThread.start()
         while True:
             for line in Pygtail(args['file']):
-                print(parser.parse(line))
+                record = parser.parse(line)
+                self.stats.record(record)
+                print("GOT LINE")
+
+    def console(self):
+        while True:
+            print(self.stats)
+            time.sleep(10)
 
 
 if __name__ == '__main__':

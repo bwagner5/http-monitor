@@ -38,7 +38,7 @@ class CLIMonitorArgs(MonitorArgsInterface):
         self.parser.add_argument(
             "-f",
             "--file",
-            default="small_example.log",
+            default="small_example.log.txt",
             help="HTTP Access Log to read from")
 
     def parse(self):

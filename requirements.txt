@@ -1,3 +1,5 @@
 argparse==1.4.0
 clfparser==0.3
 pygtail==0.6.1
+furl==1.0.0
+tabulate==0.7.7

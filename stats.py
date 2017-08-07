@@ -1,10 +1,18 @@
+from tabulate import tabulate
+
 class Stats(object):
+
     def __init__(self):
-        self.stats_dict = dict()
+        self.count_dict = dict()
+        self.headers = ["Website", "Count"]
 
     def record(self, record):
-        if self.stats_dict.has_key():
-            self.stats_dict[record] = self.stats_dict[record] + 1
+        section = record.get_section()
+        self.count_dict[section] = self.count_dict.get(section, 0) + 1
 
     def check_alerts(self):
         pass
+
+    def __str__(self):
+        tabular_data = [[k,v] for k, v in self.count_dict.items()]
+        return tabulate(tabular_data, self.headers, tablefmt="grid")

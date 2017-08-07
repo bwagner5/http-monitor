@@ -1,6 +1,6 @@
 from clfparser import CLFParser
 from abc import ABCMeta, abstractmethod
-
+from log_record import LogRecord
 
 class ParserInterface:
     """Interface for parsing a log file"""
@@ -16,4 +16,4 @@ class LogParser(ParserInterface):
     """Implementation of a Parser"""
 
     def parse(self, record):
-        return CLFParser.logDict(record)
+        return LogRecord(CLFParser.logDict(record))
