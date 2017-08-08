@@ -3,3 +3,5 @@ clfparser==0.3
 pygtail==0.6.1
 furl==1.0.0
 tabulate==0.7.7
+pandas==0.20.3
+numpy==1.13.1
