@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 """HTTP Monitor implementation to read an access log and alert based on a threshold"""
 
-from monitor_args import CLIMonitorArgs
-from log_parser import LogParser
-from stats import Stats
-from pprint import pprint
-from pygtail import Pygtail
+import os
+import sys
 import time
 import curses
 from threading import Thread
 import signal
-import os, sys
 from functools import partial
+from monitor_args import CLIMonitorArgs
+from log_parser import LogParser
+from stats import Stats
+from pygtail import Pygtail
 
 
 class HttpMonitor(object):
@@ -41,15 +41,15 @@ class HttpMonitor(object):
 
     def console(self):
         while True:
-            # stdscr = curses.initscr()
-            # curses.noecho()
-            # curses.cbreak()
+            stdscr = curses.initscr()
+            curses.noecho()
+            curses.cbreak()
             self.stats.check_alerts()
             num_of_rows = (self.stats.number_of_rows() + 1) * 2
-            # stdscr.addstr(0, 0, "args: " + str(self.args))
-            # stdscr.addstr(1, 0, str(self.stats))
-            # stdscr.addstr(num_of_rows + 3, 0,
-            #               str(self.stats.get_alerts_string()))
+            stdscr.addstr(0, 0, "args: " + str(self.args))
+            stdscr.addstr(1, 0, str(self.stats))
+            stdscr.addstr(num_of_rows + 3, 0,
+                          str(self.stats.get_alerts_string()))
             time.sleep(2)
 
 

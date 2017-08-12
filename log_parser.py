@@ -1,5 +1,7 @@
-from clfparser import CLFParser
+"""Parses Common Log Formatted files into log_record objects"""
+
 from abc import ABCMeta, abstractmethod
+from clfparser import CLFParser
 from log_record import LogRecord
 
 class ParserInterface:
