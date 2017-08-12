@@ -9,52 +9,43 @@ from threading import Thread
 import signal
 from functools import partial
 from monitor_args import CLIMonitorArgs
-from log_parser import LogParser
+from log_watcher import LogWatcher
+from alerter import Alerter
+from console import Console
 from stats import Stats
-from pygtail import Pygtail
 
 
 class HttpMonitor(object):
+    
     def __init__(self, args):
         self.args = args
-        self.stats = Stats(args['alert'])
-        consoleThread = Thread(target=self.console)
-        logWatchThread = Thread(target=self.log_watch)
-        consoleThread.daemon = True
-        logWatchThread.daemon = True
-        consoleThread.start()
-        logWatchThread.start()
+        self.stats = Stats(args['alert'], args['window'], args['test_window_end'])
+        self.console = Console(self.stats, self.args)
+        self.log_watcher = LogWatcher(self.stats, self.args['file'])
+        self.alerter = Alerter(self.stats)
+        threads = self.__setup_threads()
+        self.__start_threads(threads)
+        self.__keep_alive()
+
+    def __setup_threads(self):
+        consoleThread = Thread(target=self.console.run)
+        logWatchThread = Thread(target=self.log_watcher.run)
+        alertingThread = Thread(target=self.alerter.run)
+        return [consoleThread, alertingThread, logWatchThread]
+
+    def __start_threads(self, threads):
+        for thread in threads:
+            thread.daemon = True
+            thread.start()
+
+    def __keep_alive(self):
         while True:
             time.sleep(.5)
-
-    def log_watch(self):
-        parser = LogParser()
-        while True:
-            for line in Pygtail(self.args['file']):
-                record = parser.parse(line)
-                self.stats.record(record)
-
-    def alerting(self):
-        while True:
-            self.stats.check_alerts()
-            time.sleep(1)
-
-    def console(self):
-        while True:
-            stdscr = curses.initscr()
-            curses.noecho()
-            curses.cbreak()
-            self.stats.check_alerts()
-            num_of_rows = (self.stats.number_of_rows() + 1) * 2
-            stdscr.addstr(0, 0, "args: " + str(self.args))
-            stdscr.addstr(1, 0, str(self.stats))
-            stdscr.addstr(num_of_rows + 3, 0,
-                          str(self.stats.get_alerts_string()))
-            time.sleep(2)
 
 
 def signal_handler(args, signal, frame):
     os.remove(args.getArgs()['file'] + ".offset")
+    #curses.endwin() ## This will reset terminal settings, but clears window as well
     sys.exit(0)
 
 

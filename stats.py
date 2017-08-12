@@ -4,14 +4,18 @@ from tabulate import tabulate
 
 
 class Stats(object):
-    def __init__(self, alert):
+    def __init__(self, alert, window_in_seconds, test_window_end):
         self.count_dict = dict()
         self.alert = int(alert)
+        self.window_in_seconds = int(window_in_seconds)
         self.alert_messages = []
         self.is_alerting = False
         self.records = []
         self.headers = ["Website", "Count", "Record"]
-        self.test_window_end = datetime(2017, 8, 8, 23, 1, 0, 0, timezone.utc)
+        if test_window_end:
+            self.test_window_end = test_window_end.replace(tzinfo=timezone.utc)
+        else:
+            self.test_window_end = None
 
     def record(self, record):
         section = record.get_section()
@@ -26,17 +30,19 @@ class Stats(object):
 
     def check_alerts(self):
         utc_now = datetime.now(timezone.utc)
-        self.test_window_end =  self.test_window_end + timedelta(minutes=1)
-        window_list = self.__reduce_to_window(self.test_window_end)
-
+        if self.test_window_end:
+            window_list = self.__reduce_to_window(self.test_window_end)
+            self.test_window_end =  self.test_window_end + timedelta(seconds=2)
+        else:
+            window_list = self.__reduce_to_window(utc_now)
         count_in_window = len(window_list)
-        avg_hits = count_in_window/120
-        if avg_hits >= self.alert:
+        avg_hits = count_in_window/self.window_in_seconds
+        if avg_hits >= self.alert and not self.is_alerting:
             self.alert_messages.append(
                 "High traffic generated an alert - hits = %i, triggered at %s"
                 % (count_in_window, str(utc_now)))
             self.is_alerting = True
-        elif self.is_alerting:
+        elif avg_hits < self.alert and self.is_alerting:
             self.is_alerting = False
             self.alert_messages.append(
                 "Alert recovered at %s" % (str(utc_now))
@@ -51,7 +57,7 @@ class Stats(object):
 
     def __reduce_to_window(self, window_end_datetime):
         window_list = []
-        window_start_datetime = window_end_datetime - timedelta(minutes=2)
+        window_start_datetime = window_end_datetime - timedelta(seconds=self.window_in_seconds)
         for record in reversed(self.records):
             if( record.datetime >= window_start_datetime and record.datetime <= window_end_datetime ):
                 window_list.append(record)
