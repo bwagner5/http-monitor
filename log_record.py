@@ -15,6 +15,7 @@ class LogRecord(object):
         self.timezone = logDict['timezone']
         self.status_code = logDict['s']
         self.size = logDict['b']
+        self.__post_init()
 
     def __post_init(self):
         self.__to_utc(self.datetime)

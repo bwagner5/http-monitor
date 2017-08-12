@@ -1,5 +1,5 @@
 """implements storage of hits and alarms based off a time window"""
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, date
 from tabulate import tabulate
 
 
@@ -11,6 +11,7 @@ class Stats(object):
         self.is_alerting = False
         self.records = []
         self.headers = ["Website", "Count", "Record"]
+        self.test_window_end = datetime(2017, 8, 8, 23, 1, 0, 0, timezone.utc)
 
     def record(self, record):
         section = record.get_section()
@@ -25,14 +26,18 @@ class Stats(object):
 
     def check_alerts(self):
         utc_now = datetime.now(timezone.utc)
-        window_list = self.__reduce_to_window(utc_now)
+        self.test_window_end =  self.test_window_end + timedelta(minutes=1)
+        window_list = self.__reduce_to_window(self.test_window_end)
+
         count_in_window = len(window_list)
         avg_hits = count_in_window/120
         if avg_hits >= self.alert:
             self.alert_messages.append(
                 "High traffic generated an alert - hits = %i, triggered at %s"
                 % (count_in_window, str(utc_now)))
+            self.is_alerting = True
         elif self.is_alerting:
+            self.is_alerting = False
             self.alert_messages.append(
                 "Alert recovered at %s" % (str(utc_now))
             )
@@ -48,7 +53,7 @@ class Stats(object):
         window_list = []
         window_start_datetime = window_end_datetime - timedelta(minutes=2)
         for record in reversed(self.records):
-            if(record.datetime >= window_start_datetime and record.datetime <= window_end_datetime):
+            if( record.datetime >= window_start_datetime and record.datetime <= window_end_datetime ):
                 window_list.append(record)
         return window_list
 
