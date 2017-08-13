@@ -32,11 +32,13 @@ This python application monitors HTTP traffic from a Commons Log Format access l
 The app is built with Python 3.2
 
 `pip install -r requirements.txt`
+
 `./http_monitor.py`
 
 OR Docker
 
 `docker build -t http_monitor .`
+
 `docker run -it http_monitor`
 
 The dockerfile uses an ENTRYPOINT instead of CMD so you can pass args directly to the python script.
@@ -98,7 +100,7 @@ The Alerter is simply responsible for checking the Stats service for alerts at a
 
 The Console is responsible for writing to the screen. I decided to use the curses API to implement the console so that I could predictably update portions of the screen in nice to read tables. 
 
-THere are several helper classes that aid in the organization of the application such as the log_record, log_parser, monitor_args, and the stats data structure  classes. The main entry point is in the http_monitor.py file which only performs setup of threads, the stats data structure, and handles exits cleanly (so you don't get a python exception when CTRL+C'ing).
+There are several helper classes that aid in the organization of the application such as the log_record, log_parser, monitor_args, and the stats data structure  classes. The main entry point is in the http_monitor.py file which only performs setup of threads, the stats data structure, and handles exits cleanly (so you don't get a python exception when CTRL+C'ing).
 
 ## Design Improvements
 
