@@ -41,7 +41,9 @@ class LogRecord(object):
         if len(request_url_list) < 2:
             return None
         url = furl(request_url_list[1])
-        return "%s/%s" % (url.origin, str(url.path).split("/")[1])
+        path_list = str(url.path).split("/")
+        section = path_list[1] if len(path_list) > 1 else ""
+        return "%s/%s" % (url.origin, section)
 
     def __to_utc(self, datetime_obj):
         if self.timezone:

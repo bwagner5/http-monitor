@@ -5,3 +5,7 @@ furl==1.0.0
 tabulate==0.7.7
 python-dateutil==2.6.1
 humanize==0.5.1
+fake-factory==0.7.2
+numpy==1.13.1
+pytz==2016.7
+tzlocal==1.4.0

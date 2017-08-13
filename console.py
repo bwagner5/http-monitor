@@ -18,6 +18,7 @@ class Console(object):
         self.stdscr = stdscr
         while True:
             self.current_number_of_lines = 0
+
             args_str = "args: " + str(self.args)
             section_count_str = str(self.stats.get_section_count_tabular_string())
             overall_stats_header = "\nOverall Traffic Statistics: \n"
@@ -42,6 +43,10 @@ class Console(object):
             time.sleep(2)
 
     def __add_to_screen(self, text):
+        height, width = self.stdscr.getmaxyx()
+        after_text_len = len(text) + self.current_number_of_lines
+        if after_text_len >= height:
+            self.stdscr.resize(after_text_len, width)
         self.stdscr.addstr(self.__current_number_of_lines(text), 0, text)
 
     def __current_number_of_lines(self, text):

@@ -7,4 +7,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD [ "python", "./http_monitor.py" ]
+ENTRYPOINT [ "python", "./http_monitor.py" ]

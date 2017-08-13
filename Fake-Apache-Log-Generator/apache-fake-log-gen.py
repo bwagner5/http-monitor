@@ -56,7 +56,7 @@ faker = Faker()
 timestr = time.strftime("%Y%m%d-%H%M%S")
 otime = datetime.datetime.now()
 
-outFileName = 'access_log_'+timestr+'.log' if not file_prefix else file_prefix+'_access_log_'+timestr+'.log'
+outFileName = 'access.log' if not file_prefix else file_prefix+'_access.log'
 
 for case in switch(output_type):
 	if case('LOG'):
@@ -73,7 +73,7 @@ response=["200","404","500","301"]
 
 verb=["GET","POST","DELETE","PUT"]
 
-resources=["http://google.com/list","https://yahoo.com/wp-content","http://aol.com/wp-admin","http://tripletech.net/explore","https://datadog.com/search/tag/list","http://verizon.com/app/main/posts","http://behold.me/posts/posts/explore","https://brandonwagner.info/apps/cart.jsp?appID="]
+resources=["http://aws.amazon.com", "http://google.com/list","https://yahoo.com/wp-content","http://aol.com/wp-admin","http://tripletech.net/explore","https://datadog.com/search/tag/list","http://verizon.com/app/main/posts","http://behold.me/posts/posts/explore","https://brandonwagner.info/apps/cart.jsp?appID="]
 
 flag = True
 while (flag):
@@ -97,5 +97,5 @@ while (flag):
 	flag = False if log_lines == 0 else True
 	if args.sleep:
 		time.sleep(args.sleep)
-	if 0 == randint(0,100):
-		time.sleep(4)
+	if 0 == randint(0,1200):
+		time.sleep(60)

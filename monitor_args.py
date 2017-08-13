@@ -60,6 +60,24 @@ class CLIMonitorArgs(MonitorArgsInterface):
             help="Test window upper bound in UTC for testing (ie. \"2017-08-08 23:03:20\")",
             type=self.__valid_date
         )
+        self.parser.add_argument(
+            "-t1",
+            "--test1",
+            help="Execute Test 1 - uses requests_at_same_time.log.txt which should alert immediately and then resolve",
+            action='store_true'
+        )
+        self.parser.add_argument(
+            "-t2",
+            "--test2",
+            help="Execute Test 2 - uses apache-fake-log-gen.py to simulate bursty traffic",
+            action='store_true'
+        )
+        self.parser.add_argument(
+            "-t3",
+            "--test3",
+            help="Execute Test 3 - automated test for alerting logic",
+            action='store_true'
+        )
 
     def parse(self):
         self.args = vars(self.parser.parse_args())
