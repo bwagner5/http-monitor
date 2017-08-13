@@ -15,12 +15,28 @@ class LogRecord(object):
         self.timezone = logDict['timezone']
         self.status_code = logDict['s']
         self.size = logDict['b']
+        self.section = None
+        self.http_verb = None
         self.__post_init()
 
     def __post_init(self):
         self.__to_utc(self.datetime)
+        self.section = self.__parse_section()
+        self.http_verb = self.__parse_http_verb()
+
+    def get_http_verb(self):
+        return self.http_verb
 
     def get_section(self):
+       return self.section
+
+    def __parse_http_verb(self):
+        request_url_list = self.request.split(" ")
+        if len(request_url_list) < 2:
+            return None
+        return request_url_list[0][1:]
+
+    def __parse_section(self):
         request_url_list = self.request.split(" ")
         if len(request_url_list) < 2:
             return None

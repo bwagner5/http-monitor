@@ -27,6 +27,20 @@ Please submit here: https://app.greenhouse.io/tests/c56c91edafa7365224a7610e3d9e
 
 This python application monitors HTTP traffic from a Commons Log Format access log. Statistics are gathered about the overall traffic, section counts, and other useful information. Alerts are also generated based off a variable threshold provided as an argument. 
 
+## Installation
+
+The app is built with Python 3.2
+
+`pip install -r requirements.txt`
+`./http_monitor.py`
+
+OR Docker
+
+`docker build -t http_monitor .`
+`docker run -it http_monitor`
+
+**Make sure to mount any volumes needed if testing a log stream rather than a static file.
+
 ## Usage
 
 ```
